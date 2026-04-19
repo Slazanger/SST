@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SST.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="650"
+             Width="450" Height="650"
+             x:Class="SST.Views.SyncView"
+             x:DataType="vm:SyncViewModel">
+
+  <Design.DataContext>
+    <vm:SyncViewModel/>
+  </Design.DataContext>
+
+  <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,Auto" Margin="6" RowSpacing="4">
+
+    <DockPanel Grid.Row="1" LastChildFill="True" Margin="0,0,0,15">
+      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+        <TextBlock VerticalAlignment="Center" FontSize="10" Text="Busy…" IsVisible="{Binding IsBusy}"/>
+
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Spacing="4">
+        <TextBox MinWidth="320" PlaceholderText="EVE local settings folder" Text="{Binding EveRootPath}" IsReadOnly="True"/>
+        <Button Content="Browse…" Command="{Binding BrowseCommand}"/>
+        <Button Content="Scan" Command="{Binding ScanCommand}"/>
+      </StackPanel>
+    </DockPanel>
+
+
+
+    <StackPanel Grid.Row="2" Spacing="2">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Classes="hudSection" Text="Server" Width="100" FontSize="12"/>
+            <ComboBox Width="330" HorizontalAlignment="Left"
+                      ItemsSource="{Binding Servers}"
+                      SelectedItem="{Binding SelectedServer}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ServerListItem">
+                        <StackPanel Spacing="0">
+                            <TextBlock Text="{Binding DisplayLabel}" FontWeight="SemiBold" FontSize="10"/>
+                            <TextBlock Classes="muted" Text="{Binding FolderName}" FontSize="9"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+        </StackPanel>
+        <Separator Height="1" Margin="1,10"/>
+    </StackPanel>
+
+    <Grid Grid.Row="3" >
+      <StackPanel  Spacing="3">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock FontSize="12" Text="Master Character" Width="100"/>
+            <ComboBox ItemsSource="{Binding CharFiles}"
+                      SelectedItem="{Binding MasterChar}" Width="330">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:CharacterNamedFileItem">
+                        <TextBlock Text="{Binding DisplayLine}" TextTrimming="CharacterEllipsis" FontSize="10"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock FontSize="12" Text="Master User" Width="100"/>
+            <ComboBox ItemsSource="{Binding UserFiles}"
+                      SelectedItem="{Binding MasterUser}" Width="330">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:CharacterNamedFileItem">
+                        <TextBlock Text="{Binding DisplayLine}" TextTrimming="CharacterEllipsis" FontSize="10"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+        </StackPanel>
+
+
+        <Separator Height="1" Margin="1,10"/>
+
+        <TextBlock DockPanel.Dock="Top" Classes="hudSection" Text="Targets"/>
+        <Border BorderBrush="{DynamicResource EveBorderBrush}" BorderThickness="1" Padding="3,2"
+                Background="{DynamicResource EveBgPanelBrush}">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Height="250">
+                <ItemsControl ItemsSource="{Binding TargetRows}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SelectableFileRow">
+                            <CheckBox Margin="0,0,0,0" Padding="0" IsChecked="{Binding IsSelected}">
+                                <TextBlock Text="{Binding DisplayLine}" TextTrimming="CharacterEllipsis" FontSize="10"/>
+                            </CheckBox>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+        <Button Content="Apply" Command="{Binding ApplyCommand}" Background="DarkRed"/>
+        <Separator Height="1" Margin="1,10"/>
+      </StackPanel>
+
+
+    </Grid>
+
+    <DockPanel Grid.Row="4" LastChildFill="True">
+      <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+        <TextBlock DockPanel.Dock="Left" Classes="hudSection" Text="Log" VerticalAlignment="Center"/>
+        <Button DockPanel.Dock="Right" Content="Clear" Command="{Binding ClearCopyLogCommand}" Padding="6,2"/>
+      </DockPanel>
+      <Border Margin="0,2,0,0" BorderThickness="1" Padding="2"
+              Background="{DynamicResource EveBgPanelBrush}" Height="100">
+        <ListBox x:CompileBindings="False"
+                 ItemsSource="{Binding CopyLog}"
+                 FontFamily="{DynamicResource EveMonoFont}"
+                 FontSize="9"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+      </Border>
+    </DockPanel>
+
+</Grid>
+</UserControl>
