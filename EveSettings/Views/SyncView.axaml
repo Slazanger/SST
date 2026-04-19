@@ -1,0 +1,78 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:EveSettings.ViewModels"
+             xmlns:models="using:EveSettings.Core.Models"
+             mc:Ignorable="d" d:DesignWidth="980" d:DesignHeight="640"
+             x:Class="EveSettings.Views.SyncView"
+             x:DataType="vm:SyncViewModel">
+
+  <Design.DataContext>
+    <vm:SyncViewModel/>
+  </Design.DataContext>
+
+  <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="12" RowSpacing="10">
+    <TextBlock Grid.Row="0" TextWrapping="Wrap"
+               Text="Copy raw bytes from a master core_char / core_user pair onto other local .dat files. Close EVE first."/>
+
+    <DockPanel Grid.Row="1" LastChildFill="True">
+      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+        <TextBlock VerticalAlignment="Center" Text="Busy…" IsVisible="{Binding IsBusy}"/>
+        <Button Content="Apply" Command="{Binding ApplyCommand}"/>
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Spacing="8">
+        <TextBox MinWidth="520" Watermark="EVE local settings folder" Text="{Binding EveRootPath}" IsReadOnly="True"/>
+        <Button Content="Browse…" Command="{Binding BrowseCommand}"/>
+        <Button Content="Scan" Command="{Binding ScanCommand}"/>
+      </StackPanel>
+    </DockPanel>
+
+    <Grid Grid.Row="2" ColumnDefinitions="320,*" ColumnSpacing="12">
+      <StackPanel Grid.Column="0" Spacing="10">
+        <TextBlock FontWeight="Bold" Text="Masters"/>
+        <TextBlock Text="Master core_char_*.dat"/>
+        <ComboBox ItemsSource="{Binding CharFiles}"
+                  SelectedItem="{Binding MasterChar}"
+                  MinHeight="32">
+          <ComboBox.ItemTemplate>
+            <DataTemplate x:DataType="models:SettingsFileEntry">
+              <TextBlock Text="{Binding FullPath}" TextTrimming="CharacterEllipsis"/>
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <TextBlock Text="Master core_user_*.dat"/>
+        <ComboBox ItemsSource="{Binding UserFiles}"
+                  SelectedItem="{Binding MasterUser}"
+                  MinHeight="32">
+          <ComboBox.ItemTemplate>
+            <DataTemplate x:DataType="models:SettingsFileEntry">
+              <TextBlock Text="{Binding FullPath}" TextTrimming="CharacterEllipsis"/>
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+      </StackPanel>
+
+      <DockPanel Grid.Column="1">
+        <TextBlock DockPanel.Dock="Top" FontWeight="Bold" Text="Targets (checkboxes)"/>
+        <Border BorderBrush="#40000000" BorderThickness="1" Padding="6">
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding TargetRows}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:SelectableFileRow">
+                  <CheckBox Margin="0,2,0,2" IsChecked="{Binding IsSelected}">
+                    <TextBlock Text="{Binding Entry.FullPath}" TextTrimming="CharacterEllipsis"/>
+                  </CheckBox>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </Border>
+      </DockPanel>
+    </Grid>
+
+    <TextBlock Grid.Row="3" TextWrapping="Wrap" Opacity="0.85" Text="{Binding StatusMessage}"/>
+  </Grid>
+</UserControl>

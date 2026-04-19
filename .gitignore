@@ -1,0 +1,8 @@
+.vs/
+EveSettings.Core.Tests/bin/
+EveSettings.Core.Tests/obj/EveSettings.Core.Tests.csproj.nuget.dgspec.json
+EveSettings.Core.Tests/obj/
+EveSettings.Core/bin/
+EveSettings.Core/obj/
+EveSettings/bin/
+EveSettings/obj/

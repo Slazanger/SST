@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="EveSettings.Core.Tests/EveSettings.Core.Tests.csproj" />
+  <Project Path="EveSettings.Core/EveSettings.Core.csproj" />
+  <Project Path="EveSettings/EveSettings.csproj" />
+</Solution>

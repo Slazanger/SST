@@ -1,0 +1,32 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:EveSettings.ViewModels"
+        xmlns:views="using:EveSettings.Views"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
+        x:Class="EveSettings.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="EVE local settings helper">
+
+  <Design.DataContext>
+    <vm:MainWindowViewModel/>
+  </Design.DataContext>
+
+  <DockPanel>
+    <Border DockPanel.Dock="Bottom" Padding="10,8" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+      <TextBlock TextWrapping="Wrap" Opacity="0.85"
+                 Text="Unofficial tool. EVE Online is a trademark of CCP hf. Always keep backups; you are responsible for any changes to local files."/>
+    </Border>
+
+    <TabControl Margin="0,8,0,0">
+      <TabItem Header="Sync">
+        <views:SyncView DataContext="{Binding Sync}"/>
+      </TabItem>
+      <TabItem Header="Inspector">
+        <views:InspectorView DataContext="{Binding Inspector}"/>
+      </TabItem>
+    </TabControl>
+  </DockPanel>
+</Window>
