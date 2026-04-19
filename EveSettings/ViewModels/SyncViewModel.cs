@@ -32,7 +32,22 @@ public partial class SyncViewModel : ViewModelBase
     public ObservableCollection<CharacterNamedFileItem> UserFiles { get; } = [];
     public ObservableCollection<SelectableFileRow> TargetRows { get; } = [];
 
+    /// <summary>Append-only lines for each Apply (copy operations).</summary>
+    public ObservableCollection<string> CopyLog { get; } = [];
+
     public void AttachShell(Window shell) => _shell = shell;
+
+    private const int MaxCopyLogLines = 800;
+
+    [RelayCommand]
+    private void ClearCopyLog() => CopyLog.Clear();
+
+    private void AppendCopyLog(string line)
+    {
+        CopyLog.Add($"[{DateTime.Now:HH:mm:ss}] {line}");
+        while (CopyLog.Count > MaxCopyLogLines)
+            CopyLog.RemoveAt(0);
+    }
 
     public async Task InitializeAsync()
     {
@@ -296,14 +311,40 @@ public partial class SyncViewModel : ViewModelBase
         if (!ok)
             return;
 
+        AppendCopyLog($"Apply started — {targets.Count} target(s).");
+        AppendCopyLog($"  Master core_char: {MasterChar.Entry.FullPath}");
+        AppendCopyLog($"  Master core_user: {MasterUser.Entry.FullPath}");
+        foreach (var t in targets)
+            AppendCopyLog($"  Target [{t.Kind}] {t.FullPath}");
+
         IsBusy = true;
         try
         {
             var results = _copyService.CopyWithBackups(MasterChar.Entry.FullPath, MasterUser.Entry.FullPath, targets);
 
+            foreach (var r in results)
+            {
+                var kind = r.TargetKind == SettingsFileKind.Char ? "core_char" : "core_user";
+                if (r.Succeeded)
+                {
+                    var bak = r.BackupPath is null ? "no backup (file was new)" : $"backup: {r.BackupPath}";
+                    AppendCopyLog($"OK [{kind}] {r.DestinationPath}");
+                    AppendCopyLog($"    ← {r.SourcePath}");
+                    AppendCopyLog($"    {bak}");
+                }
+                else
+                {
+                    AppendCopyLog($"FAIL [{kind}] {r.DestinationPath}");
+                    AppendCopyLog($"    ← {r.SourcePath}");
+                    AppendCopyLog($"    Error: {r.Error}");
+                }
+            }
+
+            var okCount = results.Count(r => r.Succeeded);
+            AppendCopyLog($"Apply finished — {okCount}/{results.Count} succeeded.");
             var errors = results.Where(r => !r.Succeeded).Select(r => $"{r.DestinationPath}: {r.Error}").ToList();
             StatusMessage = errors.Count == 0
-                ? $"Done. Updated {results.Count(r => r.Succeeded)} file(s)."
+                ? $"Done. Updated {okCount} file(s)."
                 : $"Completed with errors: {string.Join("; ", errors)}";
         }
         finally

@@ -11,7 +11,7 @@
     <vm:SyncViewModel/>
   </Design.DataContext>
 
-  <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="12" RowSpacing="10">
+  <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,200" Margin="12" RowSpacing="10">
     <TextBlock Grid.Row="0" TextWrapping="Wrap"
                Text="Copy raw bytes from a master core_char / core_user pair onto other local .dat files. Close EVE first."/>
 
@@ -42,8 +42,6 @@
           </DataTemplate>
         </ComboBox.ItemTemplate>
       </ComboBox>
-      <TextBlock TextWrapping="Wrap" Opacity="0.85" FontSize="12"
-                 Text="Only core_char IDs are looked up on ESI as character names. core_user files are account-level and show as Account (id). Uses Tranquility ESI for most folders; China shards use NetEase ESI. Best-effort on test shards. Requires network."/>
     </StackPanel>
 
     <Grid Grid.Row="3" ColumnDefinitions="360,*" ColumnSpacing="12">
@@ -90,6 +88,21 @@
       </DockPanel>
     </Grid>
 
-    <TextBlock Grid.Row="4" TextWrapping="Wrap" Opacity="0.85" Text="{Binding StatusMessage}"/>
+    <DockPanel Grid.Row="4" LastChildFill="True">
+      <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+        <TextBlock DockPanel.Dock="Left" FontWeight="Bold" Text="Copy log" VerticalAlignment="Center"/>
+        <Button DockPanel.Dock="Right" Content="Clear log" Command="{Binding ClearCopyLogCommand}" Padding="10,4"/>
+      </DockPanel>
+      <Border Margin="0,6,0,0" BorderBrush="#40000000" BorderThickness="1" Padding="4">
+        <ListBox x:CompileBindings="False"
+                 ItemsSource="{Binding CopyLog}"
+                 FontFamily="Consolas, Cascadia Mono, Courier New, monospace"
+                 FontSize="12"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+      </Border>
+    </DockPanel>
+
+    <TextBlock Grid.Row="5" TextWrapping="Wrap" Opacity="0.85" Text="{Binding StatusMessage}"/>
   </Grid>
 </UserControl>

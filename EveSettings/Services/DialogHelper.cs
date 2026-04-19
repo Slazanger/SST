@@ -15,17 +15,25 @@ internal static class DialogHelper
             TextWrapping = Avalonia.Media.TextWrapping.Wrap,
         };
 
-        var w = new Window
-        {
-            Title = title,
-            Width = 560,
-            Height = 260,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            CanResize = false,
-        };
+        var scroll = new ScrollViewer { Content = text };
 
         var yes = new Button { Content = "Apply", MinWidth = 100 };
         var no = new Button { Content = "Cancel", MinWidth = 100 };
+
+        var w = new Window
+        {
+            Title = title,
+            MinWidth = 520,
+            Width = 580,
+            MinHeight = 260,
+            Height = 480,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            CanResize = true,
+        };
+
+        var maxH = parent.Screens?.Primary?.WorkingArea.Height * 0.88 ?? 800;
+        if (maxH > 200)
+            w.MaxHeight = maxH;
 
         yes.Click += (_, _) =>
         {
@@ -44,15 +52,26 @@ internal static class DialogHelper
             Orientation = Orientation.Horizontal,
             HorizontalAlignment = HorizontalAlignment.Right,
             Spacing = 8,
+            Margin = new Avalonia.Thickness(0, 12, 0, 0),
             Children = { no, yes },
         };
 
-        w.Content = new StackPanel
+        var grid = new Grid
         {
             Margin = new Avalonia.Thickness(16),
-            Spacing = 12,
-            Children = { text, buttons },
+            RowDefinitions =
+            [
+                new RowDefinition(1, GridUnitType.Star),
+                new RowDefinition(GridLength.Auto),
+            ],
         };
+
+        Grid.SetRow(scroll, 0);
+        Grid.SetRow(buttons, 1);
+        grid.Children.Add(scroll);
+        grid.Children.Add(buttons);
+
+        w.Content = grid;
 
         w.Closed += (_, _) => tcs.TrySetResult(false);
 
