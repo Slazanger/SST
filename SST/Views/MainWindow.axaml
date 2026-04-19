@@ -9,7 +9,7 @@
         x:Class="SST.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/SST.ico"
-        Title="SST - Eve Setting Tool">
+        Title="SST - Eve Setting Tool v0.1 (2026-04-19)">
 
   <Design.DataContext>
     <vm:MainWindowViewModel/>
