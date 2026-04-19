@@ -8,17 +8,13 @@
         x:Class="EveSettings.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="EVE local settings helper">
+        Title="SST - Eve Setting Tool">
 
   <Design.DataContext>
     <vm:MainWindowViewModel/>
   </Design.DataContext>
 
   <DockPanel>
-    <Border DockPanel.Dock="Bottom" Padding="10,8" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-      <TextBlock TextWrapping="Wrap" Opacity="0.85"
-                 Text="Unofficial tool. EVE Online is a trademark of CCP hf. Always keep backups; you are responsible for any changes to local files."/>
-    </Border>
 
     <TabControl Margin="0,8,0,0">
       <TabItem Header="Sync">

@@ -3,13 +3,11 @@ using EveSettings.Core.Models;
 
 namespace EveSettings.ViewModels;
 
-public partial class SelectableFileRow : ViewModelBase
+public partial class CharacterNamedFileItem : ViewModelBase
 {
-    public SelectableFileRow(SettingsFileEntry entry) => Entry = entry;
+    public CharacterNamedFileItem(SettingsFileEntry entry) => Entry = entry;
 
     public SettingsFileEntry Entry { get; }
-
-    [ObservableProperty] private bool _isSelected;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayLine))]

@@ -72,10 +72,10 @@
           <TextBlock Grid.Row="0" Grid.ColumnSpan="2" TextWrapping="Wrap"
                      Text="Workflow: log in, change exactly one UI setting, log out, copy the same .dat twice (before/after). Pick both files here."/>
 
-          <TextBox Grid.Row="1" Grid.Column="0" Watermark="File A" Text="{Binding DiffPathA}" IsReadOnly="True"/>
+          <TextBox Grid.Row="1" Grid.Column="0" PlaceholderText="File A" Text="{Binding DiffPathA}" IsReadOnly="True"/>
           <Button Grid.Row="1" Grid.Column="1" Content="Pick A" Command="{Binding PickDiffACommand}"/>
 
-          <TextBox Grid.Row="2" Grid.Column="0" Watermark="File B" Text="{Binding DiffPathB}" IsReadOnly="True"/>
+          <TextBox Grid.Row="2" Grid.Column="0" PlaceholderText="File B" Text="{Binding DiffPathB}" IsReadOnly="True"/>
           <Button Grid.Row="2" Grid.Column="1" Content="Pick B" Command="{Binding PickDiffBCommand}"/>
 
           <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Spacing="8">

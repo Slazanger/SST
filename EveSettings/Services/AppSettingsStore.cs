@@ -42,4 +42,7 @@ public sealed class AppSettingsStore
 public sealed class AppSettings
 {
     public string? LastEveRootPath { get; set; }
+
+    /// <summary>Last selected CCP server folder name under the EVE root (e.g. <c>c_tranquility</c>).</summary>
+    public string? LastServerFolderName { get; set; }
 }

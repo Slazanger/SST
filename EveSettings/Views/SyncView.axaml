@@ -3,7 +3,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:EveSettings.ViewModels"
-             xmlns:models="using:EveSettings.Core.Models"
              mc:Ignorable="d" d:DesignWidth="980" d:DesignHeight="640"
              x:Class="EveSettings.Views.SyncView"
              x:DataType="vm:SyncViewModel">
@@ -12,7 +11,7 @@
     <vm:SyncViewModel/>
   </Design.DataContext>
 
-  <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="12" RowSpacing="10">
+  <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="12" RowSpacing="10">
     <TextBlock Grid.Row="0" TextWrapping="Wrap"
                Text="Copy raw bytes from a master core_char / core_user pair onto other local .dat files. Close EVE first."/>
 
@@ -23,13 +22,31 @@
       </StackPanel>
 
       <StackPanel Orientation="Horizontal" Spacing="8">
-        <TextBox MinWidth="520" Watermark="EVE local settings folder" Text="{Binding EveRootPath}" IsReadOnly="True"/>
+        <TextBox MinWidth="480" PlaceholderText="EVE local settings folder" Text="{Binding EveRootPath}" IsReadOnly="True"/>
         <Button Content="Browse…" Command="{Binding BrowseCommand}"/>
         <Button Content="Scan" Command="{Binding ScanCommand}"/>
       </StackPanel>
     </DockPanel>
 
-    <Grid Grid.Row="2" ColumnDefinitions="320,*" ColumnSpacing="12">
+    <StackPanel Grid.Row="2" Spacing="6">
+      <TextBlock FontWeight="Bold" Text="Server"/>
+      <ComboBox MinWidth="360" HorizontalAlignment="Left"
+                ItemsSource="{Binding Servers}"
+                SelectedItem="{Binding SelectedServer}">
+        <ComboBox.ItemTemplate>
+          <DataTemplate x:DataType="vm:ServerListItem">
+            <StackPanel Spacing="2">
+              <TextBlock Text="{Binding DisplayLabel}" FontWeight="SemiBold"/>
+              <TextBlock Text="{Binding FolderName}" Opacity="0.7" FontSize="12"/>
+            </StackPanel>
+          </DataTemplate>
+        </ComboBox.ItemTemplate>
+      </ComboBox>
+      <TextBlock TextWrapping="Wrap" Opacity="0.85" FontSize="12"
+                 Text="Only core_char IDs are looked up on ESI as character names. core_user files are account-level and show as Account (id). Uses Tranquility ESI for most folders; China shards use NetEase ESI. Best-effort on test shards. Requires network."/>
+    </StackPanel>
+
+    <Grid Grid.Row="3" ColumnDefinitions="360,*" ColumnSpacing="12">
       <StackPanel Grid.Column="0" Spacing="10">
         <TextBlock FontWeight="Bold" Text="Masters"/>
         <TextBlock Text="Master core_char_*.dat"/>
@@ -37,8 +54,8 @@
                   SelectedItem="{Binding MasterChar}"
                   MinHeight="32">
           <ComboBox.ItemTemplate>
-            <DataTemplate x:DataType="models:SettingsFileEntry">
-              <TextBlock Text="{Binding FullPath}" TextTrimming="CharacterEllipsis"/>
+            <DataTemplate x:DataType="vm:CharacterNamedFileItem">
+              <TextBlock Text="{Binding DisplayLine}" TextTrimming="CharacterEllipsis"/>
             </DataTemplate>
           </ComboBox.ItemTemplate>
         </ComboBox>
@@ -48,8 +65,8 @@
                   SelectedItem="{Binding MasterUser}"
                   MinHeight="32">
           <ComboBox.ItemTemplate>
-            <DataTemplate x:DataType="models:SettingsFileEntry">
-              <TextBlock Text="{Binding FullPath}" TextTrimming="CharacterEllipsis"/>
+            <DataTemplate x:DataType="vm:CharacterNamedFileItem">
+              <TextBlock Text="{Binding DisplayLine}" TextTrimming="CharacterEllipsis"/>
             </DataTemplate>
           </ComboBox.ItemTemplate>
         </ComboBox>
@@ -63,7 +80,7 @@
               <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="vm:SelectableFileRow">
                   <CheckBox Margin="0,2,0,2" IsChecked="{Binding IsSelected}">
-                    <TextBlock Text="{Binding Entry.FullPath}" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding DisplayLine}" TextTrimming="CharacterEllipsis"/>
                   </CheckBox>
                 </DataTemplate>
               </ItemsControl.ItemTemplate>
@@ -73,6 +90,6 @@
       </DockPanel>
     </Grid>
 
-    <TextBlock Grid.Row="3" TextWrapping="Wrap" Opacity="0.85" Text="{Binding StatusMessage}"/>
+    <TextBlock Grid.Row="4" TextWrapping="Wrap" Opacity="0.85" Text="{Binding StatusMessage}"/>
   </Grid>
 </UserControl>

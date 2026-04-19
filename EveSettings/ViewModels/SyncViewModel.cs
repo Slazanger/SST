@@ -13,16 +13,23 @@ public partial class SyncViewModel : ViewModelBase
 {
     private readonly AppSettingsStore _settingsStore = new();
     private readonly SettingsCopyService _copyService = new();
+    private readonly EsiUniverseNamesClient _esiNames = new();
     private Window? _shell;
+
+    private List<SettingsFileEntry> _allFiles = [];
+    private string? _pendingServerFolder;
+    private bool _suppressServerSelectionEvent;
 
     [ObservableProperty] private string? _eveRootPath;
     [ObservableProperty] private string _statusMessage = "Select your EVE local settings folder, then scan.";
     [ObservableProperty] private bool _isBusy;
-    [ObservableProperty] private SettingsFileEntry? _masterChar;
-    [ObservableProperty] private SettingsFileEntry? _masterUser;
+    [ObservableProperty] private CharacterNamedFileItem? _masterChar;
+    [ObservableProperty] private CharacterNamedFileItem? _masterUser;
+    [ObservableProperty] private ServerListItem? _selectedServer;
 
-    public ObservableCollection<SettingsFileEntry> CharFiles { get; } = [];
-    public ObservableCollection<SettingsFileEntry> UserFiles { get; } = [];
+    public ObservableCollection<ServerListItem> Servers { get; } = [];
+    public ObservableCollection<CharacterNamedFileItem> CharFiles { get; } = [];
+    public ObservableCollection<CharacterNamedFileItem> UserFiles { get; } = [];
     public ObservableCollection<SelectableFileRow> TargetRows { get; } = [];
 
     public void AttachShell(Window shell) => _shell = shell;
@@ -31,11 +38,28 @@ public partial class SyncViewModel : ViewModelBase
     {
         var s = await _settingsStore.LoadAsync();
         EveRootPath = s.LastEveRootPath;
+        _pendingServerFolder = s.LastServerFolderName;
+
         if (string.IsNullOrWhiteSpace(EveRootPath))
             EveRootPath = EvePaths.GetDefaultWindowsCcpEveRoot();
 
         if (Directory.Exists(EveRootPath))
             await ScanAsync();
+    }
+
+    private AppSettings CaptureSettings() => new()
+    {
+        LastEveRootPath = EveRootPath,
+        LastServerFolderName = SelectedServer?.FolderName,
+    };
+
+    partial void OnSelectedServerChanged(ServerListItem? value)
+    {
+        if (_suppressServerSelectionEvent || value is null || _allFiles.Count == 0)
+            return;
+
+        _ = ApplyServerFilterAndResolveNamesAsync();
+        _ = _settingsStore.SaveAsync(CaptureSettings());
     }
 
     [RelayCommand]
@@ -73,7 +97,7 @@ public partial class SyncViewModel : ViewModelBase
             return;
 
         EveRootPath = picked.Path.LocalPath;
-        await _settingsStore.SaveAsync(new AppSettings { LastEveRootPath = EveRootPath });
+        await _settingsStore.SaveAsync(CaptureSettings());
         await ScanAsync();
     }
 
@@ -91,34 +115,148 @@ public partial class SyncViewModel : ViewModelBase
         {
             await Task.Yield();
             var result = SettingsScanner.Scan(EveRootPath);
+            _allFiles = result.Files.ToList();
 
+            MasterChar = null;
+            MasterUser = null;
             CharFiles.Clear();
             UserFiles.Clear();
             TargetRows.Clear();
-            MasterChar = null;
-            MasterUser = null;
+            Servers.Clear();
 
-            foreach (var f in result.Files.OrderBy(f => f.ServerFolderName).ThenBy(f => f.ProfileFolderName)
-                         .ThenBy(f => f.Kind).ThenBy(f => f.Id))
+            var distinctServers = _allFiles
+                .Select(f => f.ServerFolderName)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(n => EveServerLabels.GetDisplayLabel(n))
+                .ThenBy(n => n, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            _suppressServerSelectionEvent = true;
+            SelectedServer = null;
+            foreach (var name in distinctServers)
+                Servers.Add(new ServerListItem(name));
+
+            if (Servers.Count == 0)
             {
-                if (f.Kind == SettingsFileKind.Char)
-                    CharFiles.Add(f);
-                else
-                    UserFiles.Add(f);
+                SelectedServer = null;
+            }
+            else
+            {
+                var match = !string.IsNullOrWhiteSpace(_pendingServerFolder)
+                    ? Servers.FirstOrDefault(s =>
+                        string.Equals(s.FolderName, _pendingServerFolder, StringComparison.OrdinalIgnoreCase))
+                    : null;
 
-                TargetRows.Add(new SelectableFileRow(f));
+                SelectedServer = match ?? Servers[0];
+                _pendingServerFolder = null;
             }
 
-            if (result.Warnings.Count > 0)
-                StatusMessage = string.Join(" ", result.Warnings) + $" Found {result.Files.Count} file(s).";
-            else
-                StatusMessage = $"Found {result.Files.Count} file(s).";
+            _suppressServerSelectionEvent = false;
 
-            await _settingsStore.SaveAsync(new AppSettings { LastEveRootPath = EveRootPath });
+            if (SelectedServer is not null)
+                await ApplyServerFilterAndResolveNamesAsync();
+            else if (Servers.Count == 0)
+                StatusMessage = result.Warnings.Count > 0
+                    ? string.Join(" ", result.Warnings) + $" Found {result.Files.Count} file(s)."
+                    : $"Found {result.Files.Count} file(s); no server folders detected.";
+
+            if (result.Warnings.Count > 0 && SelectedServer is not null)
+                StatusMessage = string.Join(" ", result.Warnings) + " " + StatusMessage;
+
+            await _settingsStore.SaveAsync(CaptureSettings());
         }
         finally
         {
             IsBusy = false;
+        }
+    }
+
+    private async Task ApplyServerFilterAndResolveNamesAsync()
+    {
+        if (SelectedServer is null)
+            return;
+
+        var folder = SelectedServer.FolderName;
+        var filtered = _allFiles
+            .Where(f => string.Equals(f.ServerFolderName, folder, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(f => f.ProfileFolderName)
+            .ThenBy(f => f.Kind)
+            .ThenBy(f => f.Id)
+            .ToList();
+
+        MasterChar = null;
+        MasterUser = null;
+        CharFiles.Clear();
+        UserFiles.Clear();
+        TargetRows.Clear();
+
+        foreach (var f in filtered)
+        {
+            if (f.Kind == SettingsFileKind.Char)
+                CharFiles.Add(new CharacterNamedFileItem(f));
+            else
+                UserFiles.Add(new CharacterNamedFileItem(f));
+
+            TargetRows.Add(new SelectableFileRow(f));
+        }
+
+        await RefreshNamesAsync(EveFolderEsiRouting.GetClusterForFolder(folder));
+    }
+
+    private async Task RefreshNamesAsync(EsiCluster cluster)
+    {
+        // core_user_*.dat IDs are account-level, not ESI "character" entities — only resolve core_char IDs.
+        foreach (var item in UserFiles)
+            item.ResolvedName = null;
+
+        var idSet = new HashSet<long>();
+        foreach (var item in CharFiles)
+        {
+            if (long.TryParse(item.Entry.Id, out var id))
+                idSet.Add(id);
+        }
+
+        foreach (var row in TargetRows.Where(r => r.Entry.Kind == SettingsFileKind.Char))
+        {
+            if (long.TryParse(row.Entry.Id, out var id))
+                idSet.Add(id);
+        }
+
+        foreach (var row in TargetRows.Where(r => r.Entry.Kind == SettingsFileKind.User))
+            row.ResolvedName = null;
+
+        var distinct = idSet.ToList();
+        if (distinct.Count == 0)
+        {
+            StatusMessage =
+                $"Server: {EveServerLabels.GetDisplayLabel(SelectedServer!.FolderName)} — no core_char IDs to look up.";
+            return;
+        }
+
+        try
+        {
+            var map = await _esiNames.ResolveCharacterNamesAsync(distinct, cluster).ConfigureAwait(true);
+
+            foreach (var item in CharFiles)
+            {
+                if (long.TryParse(item.Entry.Id, out var id) && map.TryGetValue(id, out var name))
+                    item.ResolvedName = name;
+            }
+
+            foreach (var row in TargetRows.Where(r => r.Entry.Kind == SettingsFileKind.Char))
+            {
+                if (long.TryParse(row.Entry.Id, out var id) && map.TryGetValue(id, out var name))
+                    row.ResolvedName = name;
+            }
+
+            var resolved = distinct.Count(id => map.ContainsKey(id));
+            StatusMessage =
+                $"Server: {EveServerLabels.GetDisplayLabel(SelectedServer!.FolderName)} — resolved {resolved} character name(s) from {distinct.Count} core_char ID(s) via ESI.";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage =
+                $"Server: {EveServerLabels.GetDisplayLabel(SelectedServer!.FolderName)} — could not resolve character names ({ex.Message}). core_user rows stay as Account (id).";
         }
     }
 
@@ -146,8 +284,8 @@ public partial class SyncViewModel : ViewModelBase
 
         var preview = string.Join(
             Environment.NewLine,
-            targets.Select(t =>
-                $"{t.ServerFolderName}\\{t.ProfileFolderName} — {t.Kind} {t.Id} ← {(t.Kind == SettingsFileKind.Char ? MasterChar.FileName : MasterUser.FileName)}"));
+            TargetRows.Where(r => r.IsSelected).Select(r =>
+                $"{r.DisplayLine} ← {(r.Entry.Kind == SettingsFileKind.Char ? MasterChar.DisplayLine : MasterUser.DisplayLine)}"));
 
         var ok = await DialogHelper.ConfirmAsync(
             _shell,
@@ -161,7 +299,7 @@ public partial class SyncViewModel : ViewModelBase
         IsBusy = true;
         try
         {
-            var results = _copyService.CopyWithBackups(MasterChar.FullPath, MasterUser.FullPath, targets);
+            var results = _copyService.CopyWithBackups(MasterChar.Entry.FullPath, MasterUser.Entry.FullPath, targets);
 
             var errors = results.Where(r => !r.Succeeded).Select(r => $"{r.DestinationPath}: {r.Error}").ToList();
             StatusMessage = errors.Count == 0
