@@ -14,20 +14,21 @@ internal static class DialogHelper
         {
             Text = body,
             TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+            FontSize = 11,
         };
 
         var scroll = new ScrollViewer { Content = text };
 
-        var yes = new Button { Content = "Apply", MinWidth = 100 };
-        var no = new Button { Content = "Cancel", MinWidth = 100 };
+        var yes = new Button { Content = "Apply", MinWidth = 72 };
+        var no = new Button { Content = "Cancel", MinWidth = 72 };
 
         var w = new Window
         {
             Title = title,
-            MinWidth = 520,
-            Width = 580,
-            MinHeight = 260,
-            Height = 480,
+            MinWidth = 440,
+            Width = 480,
+            MinHeight = 200,
+            Height = 360,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
             CanResize = true,
             Background = new SolidColorBrush(Color.Parse("#141414")),
@@ -54,14 +55,14 @@ internal static class DialogHelper
         {
             Orientation = Orientation.Horizontal,
             HorizontalAlignment = HorizontalAlignment.Right,
-            Spacing = 8,
-            Margin = new Avalonia.Thickness(0, 12, 0, 0),
+            Spacing = 6,
+            Margin = new Avalonia.Thickness(0, 8, 0, 0),
             Children = { no, yes },
         };
 
         var grid = new Grid
         {
-            Margin = new Avalonia.Thickness(16),
+            Margin = new Avalonia.Thickness(10),
             RowDefinitions =
             [
                 new RowDefinition(1, GridUnitType.Star),

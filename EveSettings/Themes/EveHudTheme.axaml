@@ -1,6 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <!-- EVE Online–inspired HUD: near-black chrome, high-contrast silver text, minimal borders -->
+  <!-- EVE HUD — compact density -->
 
   <Styles.Resources>
     <Color x:Key="EveBgColor">#FF0D0D0D</Color>
@@ -24,8 +24,8 @@
     <FontFamily x:Key="EveUiFont">Inter, Segoe UI, Helvetica Neue, Arial</FontFamily>
     <FontFamily x:Key="EveMonoFont">Cascadia Mono, Consolas, Courier New, monospace</FontFamily>
 
-    <x:Double x:Key="EveFontSizeNormal">13</x:Double>
-    <x:Double x:Key="EveFontSizeSmall">12</x:Double>
+    <x:Double x:Key="EveFontSizeNormal">11</x:Double>
+    <x:Double x:Key="EveFontSizeSmall">10</x:Double>
   </Styles.Resources>
 
   <Style Selector="Window">
@@ -48,6 +48,7 @@
 
   <Style Selector="TextBlock.muted">
     <Setter Property="Foreground" Value="{StaticResource EveFgMutedBrush}" />
+    <Setter Property="FontSize" Value="{StaticResource EveFontSizeSmall}" />
   </Style>
 
   <Style Selector="TabControl">
@@ -58,8 +59,8 @@
     <Setter Property="FontSize" Value="{StaticResource EveFontSizeNormal}" />
     <Setter Property="Foreground" Value="{StaticResource EveFgMutedBrush}" />
     <Setter Property="Background" Value="Transparent" />
-    <Setter Property="Padding" Value="16,10" />
-    <Setter Property="Margin" Value="0,0,2,0" />
+    <Setter Property="Padding" Value="10,4" />
+    <Setter Property="Margin" Value="0,0,1,0" />
   </Style>
 
   <Style Selector="TabItem:pointerover">
@@ -78,7 +79,8 @@
     <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
     <Setter Property="BorderBrush" Value="{StaticResource EveBorderBrush}" />
     <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="Padding" Value="14,8" />
+    <Setter Property="Padding" Value="8,3" />
+    <Setter Property="MinHeight" Value="22" />
     <Setter Property="CornerRadius" Value="2" />
     <Setter Property="FontSize" Value="{StaticResource EveFontSizeSmall}" />
   </Style>
@@ -96,7 +98,8 @@
     <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
     <Setter Property="BorderBrush" Value="{StaticResource EveBorderBrush}" />
     <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="Padding" Value="8,6" />
+    <Setter Property="Padding" Value="5,2" />
+    <Setter Property="MinHeight" Value="22" />
     <Setter Property="CaretBrush" Value="{StaticResource EveFgBrush}" />
     <Setter Property="SelectionBrush" Value="{StaticResource EveAccentDimBrush}" />
     <Setter Property="FontSize" Value="{StaticResource EveFontSizeSmall}" />
@@ -107,13 +110,15 @@
     <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
     <Setter Property="BorderBrush" Value="{StaticResource EveBorderBrush}" />
     <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="Padding" Value="8,6" />
+    <Setter Property="Padding" Value="5,2" />
+    <Setter Property="MinHeight" Value="22" />
     <Setter Property="FontSize" Value="{StaticResource EveFontSizeSmall}" />
   </Style>
 
   <Style Selector="CheckBox">
     <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
     <Setter Property="FontSize" Value="{StaticResource EveFontSizeSmall}" />
+    <Setter Property="MinHeight" Value="18" />
   </Style>
 
   <Style Selector="ListBox">
@@ -121,6 +126,12 @@
     <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
     <Setter Property="BorderBrush" Value="{StaticResource EveBorderBrush}" />
     <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="FontSize" Value="{StaticResource EveFontSizeSmall}" />
+  </Style>
+
+  <Style Selector="ListBoxItem">
+    <Setter Property="Padding" Value="4,1" />
+    <Setter Property="MinHeight" Value="18" />
   </Style>
 
   <Style Selector="ListBoxItem:selected">
@@ -142,6 +153,7 @@
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="GridLinesVisibility" Value="Horizontal" />
     <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource EveBorderBrush}" />
+    <Setter Property="RowHeight" Value="22" />
     <Setter Property="FontSize" Value="{StaticResource EveFontSizeSmall}" />
   </Style>
 
@@ -150,14 +162,15 @@
     <Setter Property="Foreground" Value="{StaticResource EveFgMutedBrush}" />
     <Setter Property="BorderBrush" Value="{StaticResource EveBorderBrush}" />
     <Setter Property="BorderThickness" Value="0,0,1,1" />
-    <Setter Property="Padding" Value="8,6" />
+    <Setter Property="Padding" Value="5,2" />
     <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="FontSize" Value="{StaticResource EveFontSizeSmall}" />
   </Style>
 
   <Style Selector="TextBlock.hudSection">
     <Setter Property="FontWeight" Value="SemiBold" />
-    <Setter Property="FontSize" Value="13" />
+    <Setter Property="FontSize" Value="{StaticResource EveFontSizeNormal}" />
     <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
-    <Setter Property="Margin" Value="0,0,0,4" />
+    <Setter Property="Margin" Value="0,0,0,2" />
   </Style>
 </Styles>

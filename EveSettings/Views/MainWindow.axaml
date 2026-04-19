@@ -4,7 +4,8 @@
         xmlns:views="using:EveSettings.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
+        mc:Ignorable="d" d:DesignWidth="460" d:DesignHeight="670"
+        Width="460" Height="670" CanResize="false"
         x:Class="EveSettings.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
@@ -15,19 +16,6 @@
   </Design.DataContext>
 
   <DockPanel Background="{DynamicResource EveBgBrush}">
-    <Border DockPanel.Dock="Bottom" Padding="10,8" Background="{DynamicResource EveBgPanelBrush}"
-            BorderBrush="{DynamicResource EveBorderBrush}" BorderThickness="0,1,0,0">
-      <TextBlock Classes="muted" TextWrapping="Wrap" FontSize="11"
-                 Text="Unofficial tool. EVE Online is a trademark of CCP hf. You are responsible for backups and any changes to local files."/>
-    </Border>
-
-    <TabControl Margin="0,4,0,0" Padding="0,0,0,4">
-      <TabItem Header="Sync">
-        <views:SyncView DataContext="{Binding Sync}"/>
-      </TabItem>
-      <TabItem Header="Inspector">
-        <views:InspectorView DataContext="{Binding Inspector}"/>
-      </TabItem>
-    </TabControl>
+      <views:SyncView DataContext="{Binding Sync}" VerticalAlignment="Top"/>
   </DockPanel>
 </Window>

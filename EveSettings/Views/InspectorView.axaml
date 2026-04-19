@@ -12,28 +12,28 @@
     <vm:InspectorViewModel/>
   </Design.DataContext>
 
-  <DockPanel Margin="12">
-    <StackPanel DockPanel.Dock="Top" Spacing="8">
-      <TextBlock Classes="muted" TextWrapping="Wrap"
-                 Text="Inspect a local .dat file. Hex is limited to the first 4 MiB. Strings extraction is heuristic. Diff compares the shared prefix when lengths differ."/>
-      <StackPanel Orientation="Horizontal" Spacing="8">
-        <Button Content="Open .dat…" Command="{Binding OpenFileCommand}"/>
-        <TextBlock VerticalAlignment="Center" Text="Busy…" IsVisible="{Binding IsBusy}"/>
+  <DockPanel Margin="6">
+    <StackPanel DockPanel.Dock="Top" Spacing="3">
+      <TextBlock Classes="muted" TextWrapping="Wrap" FontSize="9"
+                 Text="Inspect .dat — hex first 4 MiB; strings heuristic; diff uses shared prefix if lengths differ."/>
+      <StackPanel Orientation="Horizontal" Spacing="4">
+        <Button Content="Open…" Command="{Binding OpenFileCommand}"/>
+        <TextBlock VerticalAlignment="Center" FontSize="10" Text="Busy…" IsVisible="{Binding IsBusy}"/>
       </StackPanel>
       <TextBlock Classes="muted" TextWrapping="Wrap" Text="{Binding DecoderNote}"/>
     </StackPanel>
 
     <TabControl>
       <TabItem Header="Details">
-        <StackPanel Margin="8" Spacing="6">
-          <TextBlock Text="{Binding CurrentPath}" TextWrapping="Wrap"/>
-          <TextBlock Text="{Binding FileSizeBytes, StringFormat=Size: {0} bytes}"/>
-          <TextBlock Text="{Binding InferredKind, StringFormat=Inferred: {0}}"/>
-          <TextBlock Text="{Binding ModifiedUtc, StringFormat=Modified (UTC): {0:O}}"/>
+        <StackPanel Margin="4" Spacing="2">
+          <TextBlock Text="{Binding CurrentPath}" TextWrapping="Wrap" FontSize="10"/>
+          <TextBlock FontSize="10" Text="{Binding FileSizeBytes, StringFormat=Size: {0} bytes}"/>
+          <TextBlock FontSize="10" Text="{Binding InferredKind, StringFormat=Inferred: {0}}"/>
+          <TextBlock FontSize="10" Text="{Binding ModifiedUtc, StringFormat=Modified (UTC): {0:O}}"/>
         </StackPanel>
       </TabItem>
 
-      <TabItem Header="Hex (first 4 MiB)">
+      <TabItem Header="Hex">
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
           <ListBox x:CompileBindings="False"
                    ItemsSource="{Binding HexLines}"
@@ -47,7 +47,7 @@
             </ListBox.Styles>
             <ListBox.ItemTemplate>
               <DataTemplate DataType="sys:String">
-                <TextBlock FontFamily="{DynamicResource EveMonoFont}" Text="{Binding}"/>
+                <TextBlock FontFamily="{DynamicResource EveMonoFont}" FontSize="9" Text="{Binding}"/>
               </DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
@@ -60,39 +60,39 @@
                   IsReadOnly="True"
                   CanUserResizeColumns="True">
           <DataGrid.Columns>
-            <DataGridTextColumn Header="Offset" Binding="{Binding Offset}" Width="90"/>
-            <DataGridTextColumn Header="Encoding" Binding="{Binding EncodingName}" Width="90"/>
+            <DataGridTextColumn Header="Off" Binding="{Binding Offset}" Width="72"/>
+            <DataGridTextColumn Header="Enc" Binding="{Binding EncodingName}" Width="72"/>
             <DataGridTextColumn Header="Text" Binding="{Binding Text}" Width="*"/>
           </DataGrid.Columns>
         </DataGrid>
       </TabItem>
 
       <TabItem Header="Diff">
-        <Grid Margin="8" RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*,Auto" RowSpacing="8" ColumnSpacing="8">
-          <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Classes="muted" TextWrapping="Wrap"
-                     Text="Workflow: log in, change exactly one UI setting, log out, copy the same .dat twice (before/after). Pick both files here."/>
+        <Grid Margin="4" RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*,Auto" RowSpacing="3" ColumnSpacing="4">
+          <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Classes="muted" TextWrapping="Wrap" FontSize="9"
+                     Text="Two captures of the same file (one UI change between). Pick A and B."/>
 
           <TextBox Grid.Row="1" Grid.Column="0" PlaceholderText="File A" Text="{Binding DiffPathA}" IsReadOnly="True"/>
-          <Button Grid.Row="1" Grid.Column="1" Content="Pick A" Command="{Binding PickDiffACommand}"/>
+          <Button Grid.Row="1" Grid.Column="1" Content="A" Command="{Binding PickDiffACommand}" MinWidth="44"/>
 
           <TextBox Grid.Row="2" Grid.Column="0" PlaceholderText="File B" Text="{Binding DiffPathB}" IsReadOnly="True"/>
-          <Button Grid.Row="2" Grid.Column="1" Content="Pick B" Command="{Binding PickDiffBCommand}"/>
+          <Button Grid.Row="2" Grid.Column="1" Content="B" Command="{Binding PickDiffBCommand}" MinWidth="44"/>
 
-          <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Spacing="8">
+          <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Spacing="3">
             <Button HorizontalAlignment="Left" Content="Run diff" Command="{Binding RunDiffCommand}"/>
             <TextBlock Classes="muted" TextWrapping="Wrap" Text="{Binding DiffSummary}"/>
           </StackPanel>
         </Grid>
       </TabItem>
 
-      <TabItem Header="Records (heuristic)">
+      <TabItem Header="Records">
         <DataGrid ItemsSource="{Binding Records}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True">
           <DataGrid.Columns>
-            <DataGridTextColumn Header="Offset" Binding="{Binding Offset}" Width="110"/>
-            <DataGridTextColumn Header="Length" Binding="{Binding Length}" Width="80"/>
-            <DataGridTextColumn Header="Kind" Binding="{Binding KindGuess}" Width="140"/>
+            <DataGridTextColumn Header="Offset" Binding="{Binding Offset}" Width="88"/>
+            <DataGridTextColumn Header="Len" Binding="{Binding Length}" Width="48"/>
+            <DataGridTextColumn Header="Kind" Binding="{Binding KindGuess}" Width="100"/>
             <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="*"/>
           </DataGrid.Columns>
         </DataGrid>
