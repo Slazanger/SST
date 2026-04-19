@@ -12,7 +12,7 @@
   </Design.DataContext>
 
   <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,200" Margin="12" RowSpacing="10">
-    <TextBlock Grid.Row="0" TextWrapping="Wrap"
+    <TextBlock Grid.Row="0" Classes="muted" TextWrapping="Wrap"
                Text="Copy raw bytes from a master core_char / core_user pair onto other local .dat files. Close EVE first."/>
 
     <DockPanel Grid.Row="1" LastChildFill="True">
@@ -29,7 +29,7 @@
     </DockPanel>
 
     <StackPanel Grid.Row="2" Spacing="6">
-      <TextBlock FontWeight="Bold" Text="Server"/>
+      <TextBlock Classes="hudSection" Text="Server"/>
       <ComboBox MinWidth="360" HorizontalAlignment="Left"
                 ItemsSource="{Binding Servers}"
                 SelectedItem="{Binding SelectedServer}">
@@ -37,16 +37,18 @@
           <DataTemplate x:DataType="vm:ServerListItem">
             <StackPanel Spacing="2">
               <TextBlock Text="{Binding DisplayLabel}" FontWeight="SemiBold"/>
-              <TextBlock Text="{Binding FolderName}" Opacity="0.7" FontSize="12"/>
+              <TextBlock Classes="muted" Text="{Binding FolderName}" FontSize="12"/>
             </StackPanel>
           </DataTemplate>
         </ComboBox.ItemTemplate>
       </ComboBox>
+      <TextBlock Classes="muted" TextWrapping="Wrap" FontSize="11"
+                 Text="Only core_char IDs resolve as names on ESI. core_user is account-level. Requires network."/>
     </StackPanel>
 
     <Grid Grid.Row="3" ColumnDefinitions="360,*" ColumnSpacing="12">
       <StackPanel Grid.Column="0" Spacing="10">
-        <TextBlock FontWeight="Bold" Text="Masters"/>
+        <TextBlock Classes="hudSection" Text="Masters"/>
         <TextBlock Text="Master core_char_*.dat"/>
         <ComboBox ItemsSource="{Binding CharFiles}"
                   SelectedItem="{Binding MasterChar}"
@@ -71,8 +73,9 @@
       </StackPanel>
 
       <DockPanel Grid.Column="1">
-        <TextBlock DockPanel.Dock="Top" FontWeight="Bold" Text="Targets (checkboxes)"/>
-        <Border BorderBrush="#40000000" BorderThickness="1" Padding="6">
+        <TextBlock DockPanel.Dock="Top" Classes="hudSection" Text="Targets (checkboxes)"/>
+        <Border BorderBrush="{DynamicResource EveBorderBrush}" BorderThickness="1" Padding="6"
+                Background="{DynamicResource EveBgPanelBrush}">
           <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding TargetRows}">
               <ItemsControl.ItemTemplate>
@@ -90,19 +93,20 @@
 
     <DockPanel Grid.Row="4" LastChildFill="True">
       <DockPanel DockPanel.Dock="Top" LastChildFill="False">
-        <TextBlock DockPanel.Dock="Left" FontWeight="Bold" Text="Copy log" VerticalAlignment="Center"/>
+        <TextBlock DockPanel.Dock="Left" Classes="hudSection" Text="Copy log" VerticalAlignment="Center"/>
         <Button DockPanel.Dock="Right" Content="Clear log" Command="{Binding ClearCopyLogCommand}" Padding="10,4"/>
       </DockPanel>
-      <Border Margin="0,6,0,0" BorderBrush="#40000000" BorderThickness="1" Padding="4">
+      <Border Margin="0,6,0,0" BorderBrush="{DynamicResource EveBorderBrush}" BorderThickness="1" Padding="4"
+              Background="{DynamicResource EveBgPanelBrush}">
         <ListBox x:CompileBindings="False"
                  ItemsSource="{Binding CopyLog}"
-                 FontFamily="Consolas, Cascadia Mono, Courier New, monospace"
+                 FontFamily="{DynamicResource EveMonoFont}"
                  FontSize="12"
                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"/>
       </Border>
     </DockPanel>
 
-    <TextBlock Grid.Row="5" TextWrapping="Wrap" Opacity="0.85" Text="{Binding StatusMessage}"/>
+    <TextBlock Grid.Row="5" Classes="muted" TextWrapping="Wrap" Text="{Binding StatusMessage}"/>
   </Grid>
 </UserControl>

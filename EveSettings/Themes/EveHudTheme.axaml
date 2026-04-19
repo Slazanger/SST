@@ -1,0 +1,163 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- EVE Online–inspired HUD: near-black chrome, high-contrast silver text, minimal borders -->
+
+  <Styles.Resources>
+    <Color x:Key="EveBgColor">#FF0D0D0D</Color>
+    <Color x:Key="EveBgPanelColor">#FF141414</Color>
+    <Color x:Key="EveBgElevatedColor">#FF1A1A1A</Color>
+    <Color x:Key="EveBgHoverColor">#FF242424</Color>
+    <Color x:Key="EveFgColor">#FFE8E8E8</Color>
+    <Color x:Key="EveFgMutedColor">#FF8A8A8A</Color>
+    <Color x:Key="EveBorderColor">#FF3D3D3D</Color>
+    <Color x:Key="EveAccentDimColor">#FF4A6B8A</Color>
+
+    <SolidColorBrush x:Key="EveBgBrush" Color="{StaticResource EveBgColor}" />
+    <SolidColorBrush x:Key="EveBgPanelBrush" Color="{StaticResource EveBgPanelColor}" />
+    <SolidColorBrush x:Key="EveBgElevatedBrush" Color="{StaticResource EveBgElevatedColor}" />
+    <SolidColorBrush x:Key="EveBgHoverBrush" Color="{StaticResource EveBgHoverColor}" />
+    <SolidColorBrush x:Key="EveFgBrush" Color="{StaticResource EveFgColor}" />
+    <SolidColorBrush x:Key="EveFgMutedBrush" Color="{StaticResource EveFgMutedColor}" />
+    <SolidColorBrush x:Key="EveBorderBrush" Color="{StaticResource EveBorderColor}" />
+    <SolidColorBrush x:Key="EveAccentDimBrush" Color="{StaticResource EveAccentDimColor}" />
+
+    <FontFamily x:Key="EveUiFont">Inter, Segoe UI, Helvetica Neue, Arial</FontFamily>
+    <FontFamily x:Key="EveMonoFont">Cascadia Mono, Consolas, Courier New, monospace</FontFamily>
+
+    <x:Double x:Key="EveFontSizeNormal">13</x:Double>
+    <x:Double x:Key="EveFontSizeSmall">12</x:Double>
+  </Styles.Resources>
+
+  <Style Selector="Window">
+    <Setter Property="Background" Value="{StaticResource EveBgBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
+    <Setter Property="FontFamily" Value="{StaticResource EveUiFont}" />
+    <Setter Property="FontSize" Value="{StaticResource EveFontSizeNormal}" />
+  </Style>
+
+  <Style Selector="UserControl">
+    <Setter Property="Background" Value="{StaticResource EveBgBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
+    <Setter Property="FontFamily" Value="{StaticResource EveUiFont}" />
+    <Setter Property="FontSize" Value="{StaticResource EveFontSizeNormal}" />
+  </Style>
+
+  <Style Selector="TextBlock">
+    <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.muted">
+    <Setter Property="Foreground" Value="{StaticResource EveFgMutedBrush}" />
+  </Style>
+
+  <Style Selector="TabControl">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
+  <Style Selector="TabItem">
+    <Setter Property="FontSize" Value="{StaticResource EveFontSizeNormal}" />
+    <Setter Property="Foreground" Value="{StaticResource EveFgMutedBrush}" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Padding" Value="16,10" />
+    <Setter Property="Margin" Value="0,0,2,0" />
+  </Style>
+
+  <Style Selector="TabItem:pointerover">
+    <Setter Property="Background" Value="{StaticResource EveBgPanelBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
+  </Style>
+
+  <Style Selector="TabItem:selected">
+    <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
+    <Setter Property="Background" Value="{StaticResource EveBgElevatedBrush}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+
+  <Style Selector="Button">
+    <Setter Property="Background" Value="{StaticResource EveBgElevatedBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource EveBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Padding" Value="14,8" />
+    <Setter Property="CornerRadius" Value="2" />
+    <Setter Property="FontSize" Value="{StaticResource EveFontSizeSmall}" />
+  </Style>
+
+  <Style Selector="Button:pointerover">
+    <Setter Property="Background" Value="{StaticResource EveBgHoverBrush}" />
+  </Style>
+
+  <Style Selector="Button:pressed">
+    <Setter Property="Background" Value="{StaticResource EveBgPanelBrush}" />
+  </Style>
+
+  <Style Selector="TextBox">
+    <Setter Property="Background" Value="{StaticResource EveBgPanelBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource EveBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Padding" Value="8,6" />
+    <Setter Property="CaretBrush" Value="{StaticResource EveFgBrush}" />
+    <Setter Property="SelectionBrush" Value="{StaticResource EveAccentDimBrush}" />
+    <Setter Property="FontSize" Value="{StaticResource EveFontSizeSmall}" />
+  </Style>
+
+  <Style Selector="ComboBox">
+    <Setter Property="Background" Value="{StaticResource EveBgPanelBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource EveBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Padding" Value="8,6" />
+    <Setter Property="FontSize" Value="{StaticResource EveFontSizeSmall}" />
+  </Style>
+
+  <Style Selector="CheckBox">
+    <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
+    <Setter Property="FontSize" Value="{StaticResource EveFontSizeSmall}" />
+  </Style>
+
+  <Style Selector="ListBox">
+    <Setter Property="Background" Value="{StaticResource EveBgPanelBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource EveBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <Style Selector="ListBoxItem:selected">
+    <Setter Property="Background" Value="{StaticResource EveBgHoverBrush}" />
+  </Style>
+
+  <Style Selector="ListBoxItem:pointerover">
+    <Setter Property="Background" Value="#FF1C1C1C" />
+  </Style>
+
+  <Style Selector="ScrollViewer">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
+  <Style Selector="DataGrid">
+    <Setter Property="Background" Value="{StaticResource EveBgPanelBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource EveBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="GridLinesVisibility" Value="Horizontal" />
+    <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource EveBorderBrush}" />
+    <Setter Property="FontSize" Value="{StaticResource EveFontSizeSmall}" />
+  </Style>
+
+  <Style Selector="DataGridColumnHeader">
+    <Setter Property="Background" Value="{StaticResource EveBgElevatedBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource EveFgMutedBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource EveBorderBrush}" />
+    <Setter Property="BorderThickness" Value="0,0,1,1" />
+    <Setter Property="Padding" Value="8,6" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+
+  <Style Selector="TextBlock.hudSection">
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="Foreground" Value="{StaticResource EveFgBrush}" />
+    <Setter Property="Margin" Value="0,0,0,4" />
+  </Style>
+</Styles>

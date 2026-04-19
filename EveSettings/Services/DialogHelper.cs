@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace EveSettings.Services;
 
@@ -29,6 +30,8 @@ internal static class DialogHelper
             Height = 480,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
             CanResize = true,
+            Background = new SolidColorBrush(Color.Parse("#141414")),
+            Foreground = new SolidColorBrush(Color.Parse("#E8E8E8")),
         };
 
         var maxH = parent.Screens?.Primary?.WorkingArea.Height * 0.88 ?? 800;

@@ -14,9 +14,14 @@
     <vm:MainWindowViewModel/>
   </Design.DataContext>
 
-  <DockPanel>
+  <DockPanel Background="{DynamicResource EveBgBrush}">
+    <Border DockPanel.Dock="Bottom" Padding="10,8" Background="{DynamicResource EveBgPanelBrush}"
+            BorderBrush="{DynamicResource EveBorderBrush}" BorderThickness="0,1,0,0">
+      <TextBlock Classes="muted" TextWrapping="Wrap" FontSize="11"
+                 Text="Unofficial tool. EVE Online is a trademark of CCP hf. You are responsible for backups and any changes to local files."/>
+    </Border>
 
-    <TabControl Margin="0,8,0,0">
+    <TabControl Margin="0,4,0,0" Padding="0,0,0,4">
       <TabItem Header="Sync">
         <views:SyncView DataContext="{Binding Sync}"/>
       </TabItem>
